@@ -1,0 +1,21 @@
+title
+
+the first line is used as the title.
+if you want to use the name of the file as the title leave the first line blank and start from a new line.
+the first line is not rendered btw, only used for the title.
+
+# Header this is h1
+## Header this is h2
+
+this is normal paragraph
+@nl
+use the @nl for new lines
+use @img <path> for images, makes sure if they are relative, to be relative to the .page file
+attributes with @... should be written in new lines
+
+No comments yet
+
+if u want to change the style change the style.css as that is the only global style
+
+btw, dont edit anything inside the `output` folder cuz that is generated and wont stay on every iteration
+
