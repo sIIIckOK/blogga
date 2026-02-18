@@ -46,7 +46,9 @@ def parse_file_to_html(path):
         lines = lines[1:]
         for l in lines:
             l = l.strip()
-            if len(l) == 0: continue
+            if len(l) == 0: 
+                retstr += "<br>\n"
+                continue
 
             if l.startswith("@img"):
                 l = l.removeprefix("@img"); l.strip()
