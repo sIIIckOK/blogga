@@ -107,10 +107,10 @@ list_points = []
 
 def generate_index(path, es):
     title = "index"
-    body = "<ul class=\"main-list\">\n"
+    body = "<ol class=\"main-list\">\n"
     for lp in list_points:
         body += "    <li><a href="+lp.filename+".html>"+lp.title+"</a></li>\n"
-    body += "</ul>\n"
+    body += "</ol>\n"
     x = HTML_START + title + HTML_MID + body + HTML_END
     path =  os.path.join(path, title + ".html")
     with open(path, "w") as file: 
