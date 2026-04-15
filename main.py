@@ -4,100 +4,101 @@ import os
 from   pathlib import Path
 import shutil
 
-ROOT_PATH    = './blogs/'
-OUT_PATH     = './output/'
-OUT_IMG_PATH = './output/img/'
+ROOT_PATH    = Path('./blogs/')
+OUT_PATH     = Path('./output/')
+OUT_IMG_PATH = OUT_PATH / 'img'
 
 COUNT = 0
 def iota(): 
+    global COUNT
     COUNT+=1 
 
 
-STYLE_CSS_PATH = "./style.css"
-STYLE_CSS      = ""
+STYLE_CSS_PATH = './style.css'
+STYLE_CSS      = ''
 with open(STYLE_CSS_PATH, 'r') as file: 
     STYLE_CSS = file.read()
     
-with open(OUT_PATH+"./style.css", 'w') as file: 
+with open(OUT_PATH / 'style.css', 'w') as file: 
     file.write(STYLE_CSS)    
-    print("Generated:", "./style.css");
+    print('Generated:', './style.css');
 
 
 
-HTML_START_PATH = "./start.txt"
-HTML_MID_PATH   = "./mid.txt"
-HTML_END_PATH   = "./end.txt"
+HTML_START_PATH = './start.txt'
+HTML_MID_PATH   = './mid.txt'
+HTML_END_PATH   = './end.txt'
 
-HTML_START = ""
-HTML_MID   = ""
-HTML_END   = ""
+HTML_START = ''
+HTML_MID   = ''
+HTML_END   = ''
 
 with open(HTML_START_PATH, 'r') as file: HTML_START = file.read()
 with open(HTML_MID_PATH,   'r') as file: HTML_MID   = file.read()
 with open(HTML_END_PATH,   'r') as file: HTML_END   = file.read()
 
 def parse_file_to_html(path):
-    retstr = ""
-    title = ""
+    retstr = ''
+    title = ''
     with open(path, 'r') as file:
         lines = file.readlines()
-        if len(lines) == 0: return "", ""
+        if len(lines) == 0: return '', ''
         title = lines[0].strip()
         lines = lines[1:]
         for l in lines:
             l = l.strip()
             if len(l) == 0: 
-                retstr += "<br>\n"
+                retstr += '<br>\n'
                 continue
 
-            if l.startswith("@img"):
-                l = l.removeprefix("@img"); l.strip()
-                l = l.strip()
+            if l.startswith('@img'):
+                l = l.removeprefix('@img').strip()
                 base_dir = Path(path).resolve().parent
                 src_path = (base_dir / l).resolve()
                 if l == "": continue
                 l = os.path.basename(os.path.normpath(l))
-                img_name = l.split('.')[0]
-                ext_name = l.split('.')[1]
+                img_path = Path(l)
+                img_name = img_path.stem
+                ext_name = img_path.suffix
                 count = 0
-                while os.path.exists(OUT_IMG_PATH+img_name+"."+ext_name):
-                    img_name+=count
-                img_full_name = img_name+"."+ext_name
-                retstr += "<img src="+img_full_name+"></img>"
-                shutil.copy(src_path, OUT_PATH+img_full_name)
+                while os.path.exists(f'{os.path.join(OUT_IMG_PATH, img_name)}.{ext_name}'):
+                    img_name+=str(count)
+                    count+=1
+                img_full_name = f'{img_name}{ext_name}'
+                retstr += f'<img src="img/{img_full_name}"></img>'
+                shutil.copy(src_path, OUT_IMG_PATH / img_full_name)
                 continue
 
-            if l.startswith("@nl"):
-                retstr += "<br>\n"
+            if l.startswith('@nl'):
+                retstr += '<br>\n'
                 continue
 
-            if l.startswith("@sub"):
-                l = l.removeprefix("@sub"); l.strip()
-                l = l.strip()
-                retstr += "<br><sub>"+l+"</sub>\n"
+            if l.startswith('@sub'):
+                l = l.removeprefix('@sub').strip()
+                retstr += f'<br><sub>{l}</sub>\n'
                 continue
 
-            if l.startswith("##"):
+            if l.startswith('##'):
                 l = l.split('##')[1].strip()
-                retstr += "<h2>"+l+"</h2>\n"
+                retstr += f'<h2>{l}</h2>\n'
                 continue
-            if l.startswith("#"):
+            if l.startswith('#'):
                 l = l.split('#')[1].strip()
-                retstr += "<h1>"+l+"</h1>\n"
+                retstr += f'<h1>{l}</h1>\n'
                 continue
-            retstr += "<p>"+l+"</p>\n"
+            retstr += f'<p>{l}</p>\n'
     return retstr, title
 
 
 def generate_page(path, title, body):
     x = HTML_START + title.capitalize() + HTML_MID + body + HTML_END
-    with open(path, "w") as file: 
+    with open(path, 'w') as file: 
         file.write(x)
-    print("Generated:", path)
+    print('Generated:', path)
 
 class ListPoint:
-    title = ""
-    filename = ""
+    title = ''
+    filename = ''
     def __init__(self, title, filename):
         self.title    = title
         self.filename = filename
@@ -106,16 +107,16 @@ class ListPoint:
 list_points = []
 
 def generate_index(path, es):
-    title = "index"
-    body = "<ol class=\"main-list\">\n"
+    title = 'index'
+    body = '<ol class=\"main-list\">\n'
     for lp in list_points:
-        body += "    <li><a href="+lp.filename+".html>"+lp.title+"</a></li>\n"
+        body += f'    <li><a href="{lp.filename}.html">{lp.title}</a></li>\n'
     body += "</ol>\n"
     x = HTML_START + title + HTML_MID + body + HTML_END
-    path =  os.path.join(path, title + ".html")
-    with open(path, "w") as file: 
+    path =  os.path.join(path, title + '.html')
+    with open(path, 'w') as file: 
         file.write(x)
-    print("Generated:", path)
+    print('Generated:', path)
 
 def has_ext(name, ext):
     s = name.split('.')
@@ -126,14 +127,17 @@ def has_ext(name, ext):
 def main():
     os.makedirs(OUT_PATH, exist_ok = True)
     os.makedirs(OUT_IMG_PATH, exist_ok = True)
+    directory = Path(ROOT_PATH)
+    files = sorted(directory.glob('*'), key=lambda f: f.stat().st_mtime, reverse=True)
 
-    for e in os.scandir(ROOT_PATH):
-        if e.is_file() and has_ext(e.name, "page"):
-            filename = e.name.split('.')[0]
-            body, title = parse_file_to_html(e.path)
+    for f in files:
+        if f.is_file() and has_ext(f.name, 'page'):
+            filename = f.name.split('.')[0]
+            body, title = parse_file_to_html(str(f))
             if title == "": title = filename
             list_points.append(ListPoint(title, filename))
-            generate_page(OUT_PATH+filename+".html", title, body)
+            output_file = OUT_PATH / f'{filename}.html'
+            generate_page(output_file, title, body)
 
     generate_index(OUT_PATH, os.scandir(ROOT_PATH))
 main()
