@@ -40,16 +40,43 @@ with open(HTML_END_PATH,   'r') as file: HTML_END   = file.read()
 def parse_file_to_html(path):
     retstr = ''
     title = ''
+    in_code_block = False
     with open(path, 'r') as file:
         lines = file.readlines()
         if len(lines) == 0: return '', ''
         title = lines[0].strip()
         lines = lines[1:]
         for l in lines:
+
+            if l.strip().startswith('@code'):
+                if not in_code_block:
+                    retstr += "<pre><code>\n"
+                else:
+                    retstr += "</code></pre>\n"
+                in_code_block = not in_code_block
+                continue
+
+            if in_code_block:
+                l = l.replace("<", "&lt;").replace(">", "&gt;")
+                retstr += l
+                continue
+
             l = l.strip()
             if len(l) == 0: 
                 retstr += '<br>\n'
                 continue
+
+            if l.startswith('@a'):
+                l = l.removeprefix('@a').strip()
+                if l == '': continue
+                parts = l.rsplit(' ', 1)
+                if len(parts) >= 2:
+                    link_name, link_path = parts[0], parts[1] 
+                    retstr += f'<a href="{link_path}">{link_name}</a>\n'
+                else:
+                    retstr += f'<a href="{l}">{l}</a>\n'
+                continue
+
 
             if l.startswith('@img'):
                 l = l.removeprefix('@img').strip()
@@ -60,8 +87,8 @@ def parse_file_to_html(path):
                 img_path = Path(l)
                 img_name = img_path.stem
                 ext_name = img_path.suffix
-                count = 0
 
+                count = 0
                 temp = img_name
                 while(OUT_IMG_PATH / f"{temp}{ext_name}").exists():
                     temp = img_name
@@ -92,6 +119,7 @@ def parse_file_to_html(path):
                 retstr += f'<h1>{l}</h1>\n'
                 continue
             retstr += f'<p>{l}</p>\n'
+    if in_code_block: retstr += "</code></pre>\n"
     return retstr, title
 
 

@@ -9,9 +9,10 @@ html, body {
     font-family: system-ui, sans-serif;
     color: #FFF8DC;
     background-color: #181818FF;
+    line-height: 1.5;
 }
 
-li, ul {
+li, ul, a {
     font-size: 2rem;
 }
 
@@ -106,5 +107,19 @@ nav .a {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+pre {
+    background: #2E2E2E2E; 
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.5;
+}
+
+code {
+    color: #C9D1D9;
+    font-size: 1.4rem;
 }
 
