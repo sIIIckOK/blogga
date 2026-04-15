@@ -21,7 +21,7 @@ with open(STYLE_CSS_PATH, 'r') as file:
     
 with open(OUT_PATH / 'style.css', 'w') as file: 
     file.write(STYLE_CSS)    
-    print('Generated:', './style.css');
+    print('Generated:', './style.css')
 
 
 
@@ -61,9 +61,14 @@ def parse_file_to_html(path):
                 img_name = img_path.stem
                 ext_name = img_path.suffix
                 count = 0
-                while os.path.exists(f'{os.path.join(OUT_IMG_PATH, img_name)}.{ext_name}'):
-                    img_name+=str(count)
+
+                temp = img_name
+                while(OUT_IMG_PATH / f"{temp}{ext_name}").exists():
+                    temp = img_name
+                    temp+=str(count)
                     count+=1
+                img_name = temp
+
                 img_full_name = f'{img_name}{ext_name}'
                 retstr += f'<img src="img/{img_full_name}"></img>'
                 shutil.copy(src_path, OUT_IMG_PATH / img_full_name)
