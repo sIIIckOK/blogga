@@ -112,13 +112,14 @@ class ListPoint:
 list_points = []
 
 def generate_index(path, es):
-    title = 'index'
+    file_name = 'index.html'
+    title     = 'Blogs - sIIIckok'
     body = '<ol class=\"main-list\">\n'
     for lp in list_points:
         body += f'    <li><a href="{lp.filename}.html">{lp.title}</a></li>\n'
     body += "</ol>\n"
     x = HTML_START + title + HTML_MID + body + HTML_END
-    path =  os.path.join(path, title + '.html')
+    path =  os.path.join(path, file_name)
     with open(path, 'w') as file: 
         file.write(x)
     print('Generated:', path)
