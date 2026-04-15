@@ -12,7 +12,15 @@ html, body {
     line-height: 1.5;
 }
 
-li, ul, a {
+h2 {
+    font-size: 2.5rem;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+li, ul, a, p {
     font-size: 2rem;
 }
 
@@ -24,20 +32,6 @@ a {
 img {
     max-width: 100%;
 }
-
-p {
-    font-size: 2rem;
-}
-
-h2 {
-    font-size: 2.5rem;
-}
-
-h1 {
-    font-size: 3rem;
-}
-
-
 
 .page {
     max-width: 900px;
@@ -109,16 +103,13 @@ nav .a {
     justify-content: center;
 }
 
-pre {
+.code {
     background: #2E2E2E2E; 
     padding: 15px;
     border-radius: 5px;
     overflow-x: auto;
     font-family: 'Courier New', Courier, monospace;
-    line-height: 1.5;
-}
-
-code {
+    line-height: 2;
     color: #C9D1D9;
     font-size: 1.4rem;
 }
