@@ -50,9 +50,9 @@ def parse_file_to_html(path):
 
             if l.strip().startswith('@code'):
                 if not in_code_block:
-                    retstr += '<div class="code">\n'
+                    retstr += '<pre class="code">\n'
                 else:
-                    retstr += '</div>\n'
+                    retstr += '</pre>\n'
                 in_code_block = not in_code_block
                 continue
 
@@ -119,7 +119,7 @@ def parse_file_to_html(path):
                 retstr += f'<h1>{l}</h1>\n'
                 continue
             retstr += f'<p>{l}</p>\n'
-    if in_code_block: retstr += "</div>\n"
+    if in_code_block: retstr += "</pre>\n"
     return retstr, title
 
 

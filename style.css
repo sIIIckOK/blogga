@@ -108,8 +108,7 @@ nav .a {
     padding: 15px;
     border-radius: 5px;
     overflow-x: auto;
-    font-family: 'Courier New', Courier, monospace;
-    line-height: 2;
+    line-height: 1.5;
     color: #C9D1D9;
     font-size: 1.4rem;
 }
